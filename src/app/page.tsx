@@ -1,103 +1,373 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { DashboardLayout } from '@/components/layout/dashboard-layout'
+import { OverviewCards } from '@/components/dashboard/overview-cards'
+import { TaskCompletionChart } from '@/components/charts/task-completion-chart'
+import { ProjectStatusChart } from '@/components/charts/project-status-chart'
+import { ActivityFeed } from '@/components/dashboard/activity-feed'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Plus, TrendingUp } from 'lucide-react'
+
+export default function DashboardPage() {
+  const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState(false)
+  const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false)
+  const [isAddTeamMemberModalOpen, setIsAddTeamMemberModalOpen] = useState(false)
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <DashboardLayout>
+      <div className="space-y-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0"
+        >
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+            <p className="text-muted-foreground">
+              Welcome back! Here's what's happening with your projects.
+            </p>
+          </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          <div className="flex items-center space-x-2">
+            <Dialog open={isCreateProjectModalOpen} onOpenChange={setIsCreateProjectModalOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+                  <Plus className="mr-2 h-4 w-4" />
+                  New Project
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[600px]">
+                <DialogHeader>
+                  <DialogTitle>Create New Project</DialogTitle>
+                  <DialogDescription>
+                    Add a new project to start organizing your team's work.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="project-name" className="text-right">
+                      Name
+                    </Label>
+                    <Input
+                      id="project-name"
+                      placeholder="Project name"
+                      className="col-span-3"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="project-description" className="text-right">
+                      Description
+                    </Label>
+                    <Textarea
+                      id="project-description"
+                      placeholder="Project description"
+                      className="col-span-3"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="project-priority" className="text-right">
+                      Priority
+                    </Label>
+                    <Select>
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Select priority" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                        <SelectItem value="critical">Critical</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="project-deadline" className="text-right">
+                      Deadline
+                    </Label>
+                    <Input
+                      id="project-deadline"
+                      type="date"
+                      className="col-span-3"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="project-budget" className="text-right">
+                      Budget
+                    </Label>
+                    <Input
+                      id="project-budget"
+                      type="number"
+                      placeholder="0"
+                      className="col-span-3"
+                    />
+                  </div>
+                </div>
+
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsCreateProjectModalOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={() => setIsCreateProjectModalOpen(false)}>
+                    Create Project
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </motion.div>
+
+        {/* Overview Cards */}
+        <OverviewCards />
+
+        {/* Charts Section */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="md:col-span-2">
+            <TaskCompletionChart />
+          </div>
+          <div>
+            <ProjectStatusChart />
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+
+        {/* Activity Feed and Quick Actions */}
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="md:col-span-2">
+            <ActivityFeed />
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1 }}
+          >
+            <div className="space-y-6">
+              {/* Quick Stats */}
+              <div className="rounded-lg border bg-card p-6">
+                <div className="flex items-center space-x-2 mb-4">
+                  <TrendingUp className="h-5 w-5 text-green-600" />
+                  <h3 className="font-semibold">Quick Stats</h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">This Week</span>
+                    <span className="text-sm font-medium">+12 tasks completed</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">This Month</span>
+                    <span className="text-sm font-medium">+45 tasks completed</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Team Productivity</span>
+                    <span className="text-sm font-medium text-green-600">↑ 18%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="rounded-lg border bg-card p-6">
+                <h3 className="font-semibold mb-4">Quick Actions</h3>
+                <div className="space-y-2">
+                  <Dialog open={isCreateTaskModalOpen} onOpenChange={setIsCreateTaskModalOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="w-full justify-start">
+                        <Plus className="mr-2 h-4 w-4" />
+                        Create Task
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[600px]">
+                      <DialogHeader>
+                        <DialogTitle>Create New Task</DialogTitle>
+                        <DialogDescription>
+                          Add a new task to organize your work.
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="task-title" className="text-right">
+                            Title
+                          </Label>
+                          <Input
+                            id="task-title"
+                            placeholder="Task title"
+                            className="col-span-3"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="task-description" className="text-right">
+                            Description
+                          </Label>
+                          <Textarea
+                            id="task-description"
+                            placeholder="Task description"
+                            className="col-span-3"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="task-priority" className="text-right">
+                            Priority
+                          </Label>
+                          <Select>
+                            <SelectTrigger className="col-span-3">
+                              <SelectValue placeholder="Select priority" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Low">Low</SelectItem>
+                              <SelectItem value="Medium">Medium</SelectItem>
+                              <SelectItem value="High">High</SelectItem>
+                              <SelectItem value="Critical">Critical</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="task-due-date" className="text-right">
+                            Due Date
+                          </Label>
+                          <Input
+                            id="task-due-date"
+                            type="date"
+                            className="col-span-3"
+                          />
+                        </div>
+                      </div>
+
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsCreateTaskModalOpen(false)}>
+                          Cancel
+                        </Button>
+                        <Button onClick={() => setIsCreateTaskModalOpen(false)}>
+                          Create Task
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                  <Dialog open={isAddTeamMemberModalOpen} onOpenChange={setIsAddTeamMemberModalOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="w-full justify-start">
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add Team Member
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[500px]">
+                      <DialogHeader>
+                        <DialogTitle>Add Team Member</DialogTitle>
+                        <DialogDescription>
+                          Invite a new member to join your team.
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="member-name" className="text-right">
+                            Name
+                          </Label>
+                          <Input
+                            id="member-name"
+                            placeholder="Full name"
+                            className="col-span-3"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="member-email" className="text-right">
+                            Email
+                          </Label>
+                          <Input
+                            id="member-email"
+                            type="email"
+                            placeholder="email@example.com"
+                            className="col-span-3"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="member-role" className="text-right">
+                            Role
+                          </Label>
+                          <Select>
+                            <SelectTrigger className="col-span-3">
+                              <SelectValue placeholder="Select role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Developer">Developer</SelectItem>
+                              <SelectItem value="Designer">Designer</SelectItem>
+                              <SelectItem value="Manager">Manager</SelectItem>
+                              <SelectItem value="QA">QA</SelectItem>
+                              <SelectItem value="Admin">Admin</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="member-department" className="text-right">
+                            Department
+                          </Label>
+                          <Select>
+                            <SelectTrigger className="col-span-3">
+                              <SelectValue placeholder="Select department" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Engineering">Engineering</SelectItem>
+                              <SelectItem value="Design">Design</SelectItem>
+                              <SelectItem value="Product">Product</SelectItem>
+                              <SelectItem value="Marketing">Marketing</SelectItem>
+                              <SelectItem value="Sales">Sales</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsAddTeamMemberModalOpen(false)}>
+                          Cancel
+                        </Button>
+                        <Button onClick={() => setIsAddTeamMemberModalOpen(false)}>
+                          Send Invitation
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                  <Button variant="outline" className="w-full justify-start">
+                    <TrendingUp className="mr-2 h-4 w-4" />
+                    View Reports
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </DashboardLayout>
+  )
 }
