@@ -82,7 +82,7 @@ export default function ProjectsPage() {
               <DialogHeader>
                 <DialogTitle>Create New Project</DialogTitle>
                 <DialogDescription>
-                  Add a new project to start organizing your team's work.
+                  Add a new project to start organizing your team&apos;s work.
                 </DialogDescription>
               </DialogHeader>
 
@@ -241,7 +241,7 @@ export default function ProjectsPage() {
             <span>{filteredProjects.length} projects found</span>
             {searchQuery && (
               <Badge variant="secondary">
-                Search: "{searchQuery}"
+                Search: &quot;{searchQuery}&quot;
               </Badge>
             )}
             {statusFilter !== 'all' && (

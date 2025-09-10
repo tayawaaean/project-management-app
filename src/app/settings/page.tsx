@@ -502,13 +502,13 @@ export default function SettingsPage() {
                       <DialogHeader>
                         <DialogTitle>Confirm Password Change</DialogTitle>
                         <DialogDescription>
-                          Are you sure you want to update your password? You'll need to log in again with the new password.
+                          Are you sure you want to update your password? You&apos;ll need to log in again with the new password.
                         </DialogDescription>
                       </DialogHeader>
 
                       <div className="py-4">
                         <div className="space-y-2">
-                          <Label htmlFor="confirm-password-input">Type "CONFIRM" to proceed</Label>
+                          <Label htmlFor="confirm-password-input">Type &quot;CONFIRM&quot; to proceed</Label>
                           <Input
                             id="confirm-password-input"
                             placeholder="CONFIRM"

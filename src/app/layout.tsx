@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ErrorBoundary } from "@/components/error-boundary";
+import { SkipLinks } from "@/components/accessibility";
+import { validateConfig } from "@/lib/config";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,12 +32,22 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Validate configuration on app start
+  if (typeof window === 'undefined') {
+    validateConfig()
+  }
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <SkipLinks />
+        <ErrorBoundary>
+          <div id="main-content" className="min-h-screen">
+            {children}
+          </div>
+        </ErrorBoundary>
       </body>
     </html>
   );
